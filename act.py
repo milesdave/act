@@ -10,40 +10,54 @@ def chkIfSrc(filename):
 			return True
 	return False
 
-# formats a line with a TODO in it
+# formats a line with a todo tag in it
 def formatter(lineNum, line):
-	line = line.replace("//", "")
-	line = line.replace("TODO", "")
+	toReplace = ["//", "/*", "TODO", "todo"]
+	for rep in toReplace:
+		line = line.replace(rep, "")
 	line = line.strip()
 	return str(lineNum) + ": \"" + line + "\""
 
-# scans a file for TODOs and prints them
+# checks if a line is a comment and if it has a todo tag
+def chkTodo(line):
+	line = line.strip()
+	# empty line
+	if not line:
+		return None
+	tmp = line.lower()
+	if line[0] == '/':
+		# single line comment
+		if line[1] == '/':
+			if "todo" in tmp:
+				return line
+		# multi-line comment
+		elif line[1] == '*':
+			if "todo" in tmp:
+				return line + "..."
+	return None
+
+# scans a file for todo tags and prints them
 def scanFile(f):
 	total = 0
 	lineNum = 1
 	todoList = []
-
-	# check each line for a TODO
+	# check each line for a todo
 	for line in f:
-		if "TODO" in line:
-			todoList.append(formatter(lineNum, line))
+		todo = chkTodo(line)
+		if todo:
+			todoList.append(formatter(lineNum, todo))
 			total += 1
 		lineNum += 1
-
 	# print todoList
 	if todoList:
 		print(f.name + ":")
 		for todo in todoList:
 			print("  " + todo)
-
 	return total
 
-# total TODOs found
 total = 0
 
-# go through all the files in the current dir
 for filename in os.listdir(os.getcwd()):
-	# open the file if it's a src file
 	if chkIfSrc(filename):
 		f = open(filename, "r")
 		total += scanFile(f)
