@@ -10,6 +10,13 @@ def chkIfSrc(filename):
 			return True
 	return False
 
+# formats a line with a TODO in it
+def formatter(line):
+	line = line.replace("//", "")
+	line = line.replace("TODO", "")
+	line = line.strip()
+	return "\"" + line + "\""
+
 # total TODOs found
 total = 0
 
@@ -24,7 +31,7 @@ for filename in os.listdir(os.getcwd()):
 		# scan for TODOs
 		for line in f:
 			if "TODO" in line:
-				print("  " + line, end="")
+				print("  " + str(lineNum) + ": "+ formatter(line))
 				total += 1
 			lineNum += 1
 
