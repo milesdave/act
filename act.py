@@ -12,10 +12,14 @@ def chkIfSrc(filename):
 
 # formats a line with a todo tag in it
 def formatter(lineNum, line):
-	toReplace = ["//", "/*", "TODO", "todo"]
+	toReplace = ["//", "/*", "TODO:", "todo:", "TODO", "todo"]
 	for rep in toReplace:
 		line = line.replace(rep, "")
 	line = line.strip()
+	# truncate line if it's too long
+	line = (line[:50] + "...") if len(line) > 50 else line
+	# add "???" if it's empty now
+	line = line if line else "???"
 	return str(lineNum) + ": \"" + line + "\""
 
 # checks if a line is a comment and if it has a todo tag
