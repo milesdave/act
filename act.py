@@ -6,13 +6,18 @@ import os
 def chkIfSrc(filename):
 	extensions = [".c", ".cpp", ".cs", ".h", ".hpp", ".java"]
 	for ext in extensions:
-		if ext in filename:
+		if filename.endswith(ext):
 			return True
 	return False
 
 # formats a line with a todo tag in it
 def formatter(lineNum, line):
-	toReplace = ["//", "/*", "TODO:", "todo:", "TODO", "todo"]
+	# remove actual line of code if there is any
+	tmp = line.lower()
+	todoStart = tmp.index("todo")
+	line = line[todoStart:]
+	# remove comment stuff
+	toReplace = ["//", "/*", "*/", "TODO:", "todo:", "TODO", "todo"]
 	for rep in toReplace:
 		line = line.replace(rep, "")
 	line = line.strip()
@@ -28,16 +33,10 @@ def chkTodo(line):
 	# empty line
 	if not line:
 		return None
-	tmp = line.lower()
-	if line[0] == '/':
-		# single line comment
-		if line[1] == '/':
-			if "todo" in tmp:
-				return line
-		# multi-line comment
-		elif line[1] == '*':
-			if "todo" in tmp:
-				return line + "..."
+	if "//" in line or "/*" in line:
+		tmp = line.lower()
+		if "todo" in tmp:
+			return line
 	return None
 
 # scans a file for todo tags and prints them
