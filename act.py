@@ -3,19 +3,28 @@
 import os
 
 def main():
-	total = 0
-	for filename in os.listdir("."):
-		if chkIfSrc(filename):
-			f = open(filename, "r")
-			total += scanFile(f)
-			f.close()
+	# TODO only recurse if specified
+	total = read_dir(".", True)
 	print("\nTotal: " + str(total))
 
-# checks if the file is a src file by extension
-def chkIfSrc(filename):
-	extensions = [".c", ".cpp", ".cs", ".h", ".hpp", ".java"]
+# recursively (or not) search the given directory for source files
+def read_dir(path, recursive):
+	total = 0 # total TODO comments
+	for name in os.listdir(path):
+		if recursive and os.path.isdir(name):
+			total += read_dir(name, recursive)
+		else:
+			if check_if_src(name):
+				f = open(path + "/" + name, "r")
+				total += scanFile(f)
+				f.close()
+	return total
+
+# checks if the given file is a source file by extension
+def check_if_src(name):
+	extensions = [".c", ".cpp", ".cs", ".h", ".hpp", ".java", ".py", ".sh"]
 	for ext in extensions:
-		if filename.endswith(ext):
+		if name.endswith(ext):
 			return True
 	return False
 
