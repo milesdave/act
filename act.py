@@ -1,10 +1,20 @@
 #!/bin/python
 
+import getopt
 import os
+import sys
 
 def main():
-	# TODO only recurse if specified
-	total = read_dir(".", True)
+	recursive = False
+	try:
+		opts, args, = getopt.getopt(sys.argv[1:], "r")
+	except getopt.GetoptError:
+		print("Usage: act [-r]")
+		sys.exit(1)
+	for opt, arg in opts:
+		if opt in "-r":
+			recursive = True
+	total = read_dir(".", recursive)
 	print("Total: " + str(total))
 
 # recursively (or not) search the given directory for source files
