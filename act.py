@@ -5,19 +5,18 @@ import os
 def main():
 	# TODO only recurse if specified
 	total = read_dir(".", True)
-	print("\nTotal: " + str(total))
+	print("Total: " + str(total))
 
 # recursively (or not) search the given directory for source files
+# returns total amount of TODO comments found
 def read_dir(path, recursive):
 	total = 0 # total TODO comments
 	for name in os.listdir(path):
 		if recursive and os.path.isdir(name):
 			total += read_dir(name, recursive)
-		else:
-			if check_if_src(name):
-				f = open(path + "/" + name, "r")
-				total += scanFile(f)
-				f.close()
+		elif check_if_src(name):
+			print(name + ":")
+			total += read_file(path + "/" + name)
 	return total
 
 # checks if the given file is a source file by extension
@@ -27,6 +26,27 @@ def check_if_src(name):
 		if name.endswith(ext):
 			return True
 	return False
+
+# scans a file for TODO tags and prints them
+def read_file(name):
+	total = 0
+	line_num = 1
+	todo_list = []
+	src = open(name, "r")
+	# check each line for a todo
+	for line in src:
+		todo = chkTodo(line)
+		if todo:
+			todo_list.append(formatter(line_num, todo))
+			total += 1
+		line_num += 1
+	# print todoList
+	if todo_list:
+		for todo in todo_list:
+			print("  " + todo)
+		print("")
+	src.close
+	return total
 
 # formats a line with a todo tag in it
 def formatter(lineNum, line):
@@ -56,25 +76,6 @@ def chkTodo(line):
 		if "todo" in tmp:
 			return line
 	return None
-
-# scans a file for todo tags and prints them
-def scanFile(f):
-	total = 0
-	lineNum = 1
-	todoList = []
-	# check each line for a todo
-	for line in f:
-		todo = chkTodo(line)
-		if todo:
-			todoList.append(formatter(lineNum, todo))
-			total += 1
-		lineNum += 1
-	# print todoList
-	if todoList:
-		print(f.name + ":")
-		for todo in todoList:
-			print("  " + todo)
-	return total
 
 if __name__ == "__main__":
 	main()
