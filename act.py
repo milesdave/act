@@ -2,6 +2,15 @@
 
 import os
 
+def main():
+	total = 0
+	for filename in os.listdir("."):
+		if chkIfSrc(filename):
+			f = open(filename, "r")
+			total += scanFile(f)
+			f.close()
+	print("\nTotal: " + str(total))
+
 # checks if the file is a src file by extension
 def chkIfSrc(filename):
 	extensions = [".c", ".cpp", ".cs", ".h", ".hpp", ".java"]
@@ -58,12 +67,5 @@ def scanFile(f):
 			print("  " + todo)
 	return total
 
-total = 0
-
-for filename in os.listdir(os.getcwd()):
-	if chkIfSrc(filename):
-		f = open(filename, "r")
-		total += scanFile(f)
-		f.close()
-
-print("\nTotal: " + str(total))
+if __name__ == "__main__":
+	main()
