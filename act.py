@@ -33,20 +33,29 @@ def read_file(name):
 	line_num = 1
 	todo_list = []
 	src = open(name, "r")
-	# check each line for a todo
+	# check each line for a TODO
 	for line in src:
-		todo = chkTodo(line)
-		if todo:
-			todo_list.append(formatter(line_num, todo))
+		line = line.strip()
+		if check_todo(line):
+			todo_list.append(line)
 			total += 1
 		line_num += 1
-	# print todoList
+	# print TODO list
 	if todo_list:
 		for todo in todo_list:
 			print("  " + todo)
 		print("")
 	src.close
 	return total
+
+# checks if a line has a TODO
+def check_todo(line):
+	if not line:
+		return False
+	line = line.lower()
+	if "todo" in line or "to do" in line:
+		return True
+	return False
 
 # formats a line with a todo tag in it
 def formatter(lineNum, line):
@@ -64,18 +73,6 @@ def formatter(lineNum, line):
 	# add "???" if it's empty now
 	line = line if line else "???"
 	return str(lineNum) + ": \"" + line + "\""
-
-# checks if a line is a comment and if it has a todo tag
-def chkTodo(line):
-	line = line.strip()
-	# empty line
-	if not line:
-		return None
-	if "//" in line or "/*" in line:
-		tmp = line.lower()
-		if "todo" in tmp:
-			return line
-	return None
 
 if __name__ == "__main__":
 	main()
