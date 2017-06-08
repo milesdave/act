@@ -4,26 +4,24 @@
 
 ## Description
 
-This Python script scans source files in the current directory for TODO tags and displays them.
+This Python script scans source files for TODO tags and displays them. By default it will search only the current working directory, but will search recursively with `-r`.
 
-Works with:
-- C, C++, C# and Java source files,
-- `todo` or `TODO` tags in single-line or multi-line comments.
-
-Copy the script to somewhere in your `$PATH` to use anywhere.
+Recognised source files: `.c`, `.cpp`, `.h`, `.hpp`, `.cs`, `.java`, `.py` and `.sh`.
 
 ## Usage
 
 ```
-> act.py
+> act.py -r
 main.cpp:
-  10: "command line arguments"
-  45: "replace this function with..."
-main.hpp:
-  29: "handle error cases"
-util.cpp:
-  7: "this could do with a re-write"
-  101: "phase this function out?"
+  10: // TODO command line arguments
+  45: // TODO replace this function with...
+
+script.sh:
+  29: # todo: handle error cases
+
+util.c:
+   7: /* TODO this could do with a re-write */
+ 101: /* TODO phase this function out? */
 
 Total: 5
 ```
