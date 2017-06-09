@@ -2,6 +2,7 @@
 
 import getopt
 import os
+import re
 import sys
 
 def main():
@@ -62,8 +63,9 @@ def read_file(path, name):
 def check_todo(line):
 	if not line:
 		return False
-	line = line.lower()
-	if "todo" in line or "to do" in line:
+	pattern = re.compile("\\btodo\\b", re.I)
+	match = re.search(pattern, line)
+	if match:
 		return True
 	return False
 
