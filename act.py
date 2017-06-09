@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 import getopt
 import os
@@ -16,7 +16,7 @@ def main():
 	for opt, arg in opts:
 		if opt in "-r":
 			recursive = True
-	total = read_dir(".", recursive)
+	total = read_dir(os.getcwd(), recursive)
 	print("Total: " + str(total))
 
 # recursively (or not) search the given directory for source files
@@ -24,9 +24,10 @@ def main():
 def read_dir(path, recursive):
 	total = 0
 	for name in os.listdir(path):
-		if recursive and os.path.isdir(name):
-			total += read_dir(name, recursive)
-		elif check_if_src(name):
+		fullname = path + "/" + name
+		if recursive and os.path.isdir(fullname):
+			total += read_dir(fullname, recursive)
+		elif check_if_src(fullname):
 			total += read_file(path + "/", name)
 	return total
 
