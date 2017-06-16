@@ -16,7 +16,7 @@ main.cpp:
   10: // TODO command line arguments
   45: int x = -1; // TODO replace this with...
 
-script.sh:
+tools/script.sh:
   29: # todo: handle error cases
 
 util.c:

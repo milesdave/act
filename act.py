@@ -5,6 +5,8 @@ import os
 import re
 import sys
 
+cwd = "./"
+
 def main():
 	recursive = False
 	try:
@@ -16,7 +18,7 @@ def main():
 	for opt, arg in opts:
 		if opt in "-r":
 			recursive = True
-	total = read_dir(os.getcwd(), recursive)
+	total = read_dir(cwd, recursive)
 	print("Total: " + str(total))
 
 # recursively (or not) search the given directory for source files
@@ -24,11 +26,11 @@ def main():
 def read_dir(path, recursive):
 	total = 0
 	for name in os.listdir(path):
-		fullname = path + "/" + name
+		fullname = path + name
 		if recursive and os.path.isdir(fullname):
-			total += read_dir(fullname, recursive)
+			total += read_dir(fullname + "/", recursive)
 		elif check_if_src(fullname):
-			total += read_file(path + "/", name)
+			total += read_file(path, name)
 	return total
 
 # checks if the given file is a source file by extension
@@ -53,12 +55,19 @@ def read_file(path, name):
 		line_num += 1
 	# print TODO list
 	if todo_list:
-		print(name + ":")
+		print(relative(path) + name + ":")
 		for todo in todo_list:
 			print(todo)
 		print("")
 	src.close
 	return total
+
+# returns the path minus the cwd
+def relative(path):
+	if path == cwd:
+		return ""
+	else:
+		return path[len(cwd):]
 
 # checks if a line has a TODO
 def check_todo(line):
